@@ -21,3 +21,7 @@ javax.json.bind.JsonbException: Recursive reference has been found in class clas
 I have added a Spring Boot application where the recursive reference problem is solved by using `@JsonIdentityInfo`.
 
 However the same solution is not working for Quarkus.
+### Updated: Solution
+The reason for the `JsonbException` is that `quarkus-resteasy-jsonb` and `quarkus-resteasy-jackson` are present in the project pom file where it would seem that `quarkus-resteasy-jsonb` is taken precedence over the other one for serializing/deserializing classes. And `jsonb` uses `Yasson` for that which don't know what to do with the `@JsonIdentityInfo` annotation.
+
+The solution is to delete `quarkus-resteasy-jsonb` so that `quarkus-resteasy-jackson` so that `Jackson` is used instead to serialize/deserialze a class that hasand will process the `@JsonIdentityInfo` annotation.
